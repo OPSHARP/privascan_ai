@@ -1,0 +1,70 @@
+name: privascan_ai
+description: "Privacy-First On-Device Document Scanner & Summarizer"
+publish_to: 'none'
+version: 1.0.7+7
+
+environment:
+  sdk: ^3.11.4
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  cupertino_icons: ^2.0.0
+
+  # State Management
+  flutter_bloc: ^9.1.1
+  equatable: ^3.0.0
+
+  # Local Database
+  hive: ^2.2.3
+  hive_flutter: ^1.1.0
+
+  # OCR & AI
+  google_mlkit_text_recognition: ^0.17.1
+
+  # Camera & Image
+  camera: ^0.12.1
+  image_picker: ^1.2.4
+  image: ^4.12.0
+
+  # File & Path
+  path_provider: ^2.1.6
+  path: ^1.9.1
+
+  # Permissions
+  permission_handler: ^13.0.2
+
+  # Utilities
+  uuid: ^4.5.1
+  intl: ^0.20.3
+  crypto: ^3.0.6
+
+  # Ads
+  google_mobile_ads: ^9.2.0
+
+  # PDF Generation & Preview
+  pdf: ^3.13.1
+  printing: ^5.15.1
+
+  url_launcher: ^6.3.3
+  in_app_update: ^5.0.0
+  fluttertoast: ^10.0.2
+  google_mlkit_translation: ^0.15.1
+  share_plus: ^13.3.1
+  archive: ^4.5.2
+  file_picker: ^13.1.0
+  flutter_tts: ^4.2.5
+  google_mlkit_barcode_scanning: ^0.16.1
+  in_app_purchase: ^3.3.1
+  google_mlkit_language_id: ^0.15.1
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+  hive_generator: ^2.0.1
+  build_runner: ^2.4.13
+
+flutter:
+  uses-material-design: true

@@ -1,0 +1,951 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PrivaScan AI - Privacy-First Document Scanner for Bloggers</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    /* ===== RESET & BASE ===== */
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; overflow-x: hidden; }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #0a0e1a;
+      color: #e8edf5;
+      line-height: 1.6;
+      overflow-x: hidden;
+      perspective: 1px;
+    }
+    a { text-decoration: none; color: inherit; }
+    img { max-width: 100%; display: block; }
+
+    /* ===== HIDE BLOGGER DEFAULT HEADER ===== */
+    #navbar, #header, .header, .blog-header,
+    [id*="navbar"], [class*="navbar"],
+    [id*="header-wrapper"], [class*="header-wrapper"],
+    #header-inner, .header-inner,
+    #PageList1, .PageList, .blog-name,
+    #topnav, .topnav, #nav, .nav,
+    #Header1_headerText, #Header1,
+    body > div:first-child > div:first-child {
+      display: none !important;
+    }
+
+    /* ===== 3D PARALLAX CONTAINER ===== */
+    .parallax-layer { position: relative; transform-style: preserve-3d; }
+    .parallax-bg {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      z-index: -2;
+      background: radial-gradient(ellipse at 20% 50%, rgba(26,115,232,0.08) 0%, transparent 60%),
+                  radial-gradient(ellipse at 80% 20%, rgba(0,137,123,0.06) 0%, transparent 50%),
+                  radial-gradient(ellipse at 50% 80%, rgba(26,115,232,0.04) 0%, transparent 50%);
+    }
+    .parallax-grid {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      z-index: -1;
+      background-image:
+        linear-gradient(rgba(26,115,232,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(26,115,232,0.03) 1px, transparent 1px);
+      background-size: 60px 60px;
+      transform: translateZ(-0.5px) scale(1.5);
+      transform-origin: center center;
+    }
+
+    /* ===== FLOATING 3D ORBS ===== */
+    .orb { position: fixed; border-radius: 50%; filter: blur(80px); z-index: -1; pointer-events: none; }
+    .orb-1 {
+      width: 500px; height: 500px;
+      background: rgba(26,115,232,0.12);
+      top: -100px; left: -100px;
+      animation: floatOrb1 20s ease-in-out infinite;
+    }
+    .orb-2 {
+      width: 400px; height: 400px;
+      background: rgba(0,137,123,0.10);
+      bottom: -100px; right: -100px;
+      animation: floatOrb2 25s ease-in-out infinite;
+    }
+    .orb-3 {
+      width: 300px; height: 300px;
+      background: rgba(33,150,243,0.08);
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      animation: floatOrb3 18s ease-in-out infinite;
+    }
+    @keyframes floatOrb1 {
+      0%, 100% { transform: translate(0, 0) scale(1); }
+      33% { transform: translate(100px, 80px) scale(1.1); }
+      66% { transform: translate(-50px, 150px) scale(0.9); }
+    }
+    @keyframes floatOrb2 {
+      0%, 100% { transform: translate(0, 0) scale(1); }
+      33% { transform: translate(-80px, -60px) scale(1.15); }
+      66% { transform: translate(60px, -120px) scale(0.85); }
+    }
+    @keyframes floatOrb3 {
+      0%, 100% { transform: translate(-50%, -50%) scale(1); }
+      50% { transform: translate(-50%, -50%) scale(1.3); }
+    }
+
+    /* ===== NAVBAR ===== */
+    .navbar {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      padding: 16px 40px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      backdrop-filter: blur(20px);
+      background: rgba(10,14,26,0.6);
+      border-bottom: 1px solid rgba(255,255,255,0.04);
+      transition: transform 0.3s, background 0.3s;
+    }
+    .navbar.scrolled { background: rgba(10,14,26,0.92); }
+    .nav-logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 700;
+      font-size: 1.2rem;
+      letter-spacing: -0.5px;
+    }
+    .nav-logo svg { width: 28px; height: 28px; }
+    .nav-logo span { background: linear-gradient(135deg, #1A73E8, #00897B); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    .nav-links { display: flex; gap: 32px; align-items: center; }
+    .nav-links a {
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: rgba(255,255,255,0.6);
+      transition: color 0.3s;
+      letter-spacing: 0.3px;
+    }
+    .nav-links a:hover { color: #fff; }
+
+    /* ===== HERO ===== */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 120px 40px 80px;
+      position: relative;
+      transform-style: preserve-3d;
+    }
+    .hero-content {
+      max-width: 1100px;
+      width: 100%;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 60px;
+      align-items: center;
+      transform: translateZ(0);
+    }
+    .hero-text { position: relative; z-index: 2; }
+    .hero-badge {
+      display: inline-block;
+      padding: 6px 16px;
+      border-radius: 100px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      background: rgba(26,115,232,0.12);
+      color: #4A90D9;
+      border: 1px solid rgba(26,115,232,0.2);
+      margin-bottom: 20px;
+    }
+    .hero-title {
+      font-size: clamp(2.5rem, 5vw, 4rem);
+      font-weight: 800;
+      line-height: 1.1;
+      letter-spacing: -1px;
+      margin-bottom: 20px;
+    }
+    .hero-title .highlight {
+      background: linear-gradient(135deg, #1A73E8, #00897B, #4FC3F7);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .hero-sub {
+      font-size: 1.05rem;
+      color: rgba(255,255,255,0.55);
+      max-width: 480px;
+      margin-bottom: 32px;
+      line-height: 1.7;
+    }
+    .hero-cta {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 14px 28px;
+      border-radius: 12px;
+      font-weight: 600;
+      font-size: 0.9rem;
+      transition: all 0.3s;
+      border: none;
+      cursor: pointer;
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, #1A73E8, #00897B);
+      color: #fff;
+      box-shadow: 0 4px 24px rgba(26,115,232,0.3);
+    }
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 32px rgba(26,115,232,0.45);
+    }
+    .btn-secondary {
+      background: rgba(255,255,255,0.04);
+      color: rgba(255,255,255,0.8);
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+    .btn-secondary:hover {
+      background: rgba(255,255,255,0.08);
+      border-color: rgba(255,255,255,0.15);
+    }
+    .hero-stats {
+      display: flex;
+      gap: 40px;
+      margin-top: 40px;
+      padding-top: 32px;
+      border-top: 1px solid rgba(255,255,255,0.06);
+    }
+    .hero-stat h3 {
+      font-size: 1.6rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, #1A73E8, #4FC3F7);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .hero-stat p {
+      font-size: 0.8rem;
+      color: rgba(255,255,255,0.4);
+      margin-top: 2px;
+    }
+
+    /* ===== 3D PHONE MOCKUP ===== */
+    .hero-visual {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      perspective: 1200px;
+      transform-style: preserve-3d;
+    }
+    .phone-mockup {
+      width: 280px;
+      height: 560px;
+      border-radius: 36px;
+      background: linear-gradient(145deg, rgba(26,115,232,0.08), rgba(0,137,123,0.05));
+      border: 1.5px solid rgba(255,255,255,0.08);
+      position: relative;
+      transform-style: preserve-3d;
+      transition: transform 0.1s ease-out;
+      box-shadow:
+        0 30px 80px rgba(0,0,0,0.5),
+        0 0 0 1px rgba(255,255,255,0.04) inset;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+    .phone-notch {
+      width: 120px; height: 24px;
+      background: #0a0e1a;
+      border-radius: 0 0 16px 16px;
+      position: absolute;
+      top: 0; left: 50%;
+      transform: translateX(-50%);
+      z-index: 5;
+    }
+    .phone-screen {
+      flex: 1;
+      padding: 32px 16px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .phone-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 4px 16px;
+    }
+    .phone-header .dots {
+      display: flex;
+      gap: 6px;
+    }
+    .phone-header .dots span {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.15);
+    }
+    .phone-scan-area {
+      flex: 1;
+      background: rgba(26,115,232,0.04);
+      border-radius: 20px;
+      border: 1px dashed rgba(26,115,232,0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .phone-scan-area .corner {
+      position: absolute;
+      width: 24px; height: 24px;
+      border-color: #1A73E8;
+      border-style: solid;
+    }
+    .corner-tl { top: 12px; left: 12px; border-width: 2px 0 0 2px; border-radius: 4px 0 0 0; }
+    .corner-tr { top: 12px; right: 12px; border-width: 2px 2px 0 0; border-radius: 0 4px 0 0; }
+    .corner-bl { bottom: 12px; left: 12px; border-width: 0 0 2px 2px; border-radius: 0 0 0 4px; }
+    .corner-br { bottom: 12px; right: 12px; border-width: 0 2px 2px 0; border-radius: 0 0 4px 0; }
+    .phone-scan-area .scan-line {
+      position: absolute;
+      width: 60%;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, #1A73E8, transparent);
+      animation: scanLine 2s ease-in-out infinite;
+    }
+    @keyframes scanLine {
+      0%, 100% { top: 20%; opacity: 0.3; }
+      50% { top: 80%; opacity: 1; }
+    }
+    .phone-scan-area svg { width: 40px; height: 40px; opacity: 0.15; }
+    .phone-features {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      padding: 4px 0;
+    }
+    .phone-feat {
+      padding: 10px;
+      border-radius: 10px;
+      background: rgba(255,255,255,0.03);
+      font-size: 0.6rem;
+      color: rgba(255,255,255,0.5);
+      text-align: center;
+      font-weight: 500;
+    }
+
+    /* ===== FLOATING 3D CARDS ===== */
+    .floating-card {
+      position: absolute;
+      background: rgba(10,14,26,0.85);
+      backdrop-filter: blur(16px);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 14px;
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 0.75rem;
+      font-weight: 500;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+      transform-style: preserve-3d;
+      transition: transform 0.1s ease-out;
+      pointer-events: none;
+      white-space: nowrap;
+    }
+    .floating-card svg { width: 20px; height: 20px; flex-shrink: 0; }
+    .fc-1 { top: 8%; right: -40px; transform: translateZ(40px); }
+    .fc-2 { bottom: 15%; left: -50px; transform: translateZ(60px); }
+    .fc-3 { top: 45%; right: -20px; transform: translateZ(30px); }
+
+    /* ===== SECTIONS ===== */
+    section {
+      position: relative;
+      z-index: 1;
+      transform-style: preserve-3d;
+    }
+    .section-header {
+      text-align: center;
+      max-width: 640px;
+      margin: 0 auto 60px;
+    }
+    .section-header h2 {
+      font-size: clamp(2rem, 3.5vw, 2.8rem);
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      margin-bottom: 16px;
+    }
+    .section-header h2 .highlight {
+      background: linear-gradient(135deg, #1A73E8, #00897B);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .section-header p {
+      color: rgba(255,255,255,0.5);
+      font-size: 1rem;
+      line-height: 1.7;
+    }
+
+    /* ===== FEATURES ===== */
+    .features {
+      padding: 100px 40px;
+    }
+    .features-grid {
+      max-width: 1100px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+    }
+    .feature-card {
+      background: rgba(255,255,255,0.02);
+      border: 1px solid rgba(255,255,255,0.04);
+      border-radius: 20px;
+      padding: 32px 24px;
+      transition: all 0.4s;
+      transform-style: preserve-3d;
+      position: relative;
+      overflow: hidden;
+    }
+    .feature-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0;
+      right: 0; bottom: 0;
+      background: radial-gradient(circle at var(--mx, 50%) var(--my, 50%), rgba(26,115,232,0.06), transparent 70%);
+      opacity: 0;
+      transition: opacity 0.4s;
+      pointer-events: none;
+    }
+    .feature-card:hover::before { opacity: 1; }
+    .feature-card:hover {
+      border-color: rgba(26,115,232,0.15);
+      transform: translateY(-4px) translateZ(20px);
+      box-shadow: 0 16px 48px rgba(0,0,0,0.3);
+    }
+    .feature-icon {
+      width: 48px; height: 48px;
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 20px;
+      font-size: 1.3rem;
+    }
+    .feature-card h3 {
+      font-size: 1.05rem;
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+    .feature-card p {
+      font-size: 0.85rem;
+      color: rgba(255,255,255,0.5);
+      line-height: 1.6;
+    }
+
+    /* ===== SCREENSHOTS / GALLERY ===== */
+    .gallery {
+      padding: 100px 40px;
+      background: rgba(255,255,255,0.01);
+      border-top: 1px solid rgba(255,255,255,0.03);
+      border-bottom: 1px solid rgba(255,255,255,0.03);
+    }
+    .gallery-track {
+      max-width: 1100px;
+      margin: 0 auto;
+      display: flex;
+      gap: 24px;
+      overflow-x: auto;
+      padding: 20px 0 40px;
+      scroll-snap-type: x mandatory;
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+    .gallery-track::-webkit-scrollbar { display: none; }
+    .gallery-item {
+      flex: 0 0 220px;
+      scroll-snap-align: start;
+      border-radius: 16px;
+      overflow: hidden;
+      border: 1px solid rgba(255,255,255,0.06);
+      transition: all 0.4s;
+      transform-style: preserve-3d;
+      background: rgba(255,255,255,0.02);
+      aspect-ratio: 9/19;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.75rem;
+      color: rgba(255,255,255,0.3);
+    }
+    .gallery-item:hover {
+      transform: translateY(-8px) scale(1.02);
+      box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+      border-color: rgba(26,115,232,0.2);
+    }
+    .gallery-item img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .gallery-item .placeholder {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 20px;
+      text-align: center;
+    }
+
+    /* ===== WHY BLOGGERS ===== */
+    .why-bloggers {
+      padding: 100px 40px;
+    }
+    .why-grid {
+      max-width: 1100px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 24px;
+    }
+    .why-card {
+      background: rgba(255,255,255,0.02);
+      border: 1px solid rgba(255,255,255,0.04);
+      border-radius: 20px;
+      padding: 36px 28px;
+      transition: all 0.4s;
+      transform-style: preserve-3d;
+      position: relative;
+      overflow: hidden;
+    }
+    .why-card:hover {
+      border-color: rgba(0,137,123,0.15);
+      transform: translateY(-4px) translateZ(20px);
+      box-shadow: 0 16px 48px rgba(0,0,0,0.3);
+    }
+    .why-card .num {
+      font-size: 2.5rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, rgba(26,115,232,0.2), rgba(0,137,123,0.2));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 8px;
+    }
+    .why-card h3 {
+      font-size: 1rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+    .why-card p {
+      font-size: 0.85rem;
+      color: rgba(255,255,255,0.5);
+      line-height: 1.6;
+    }
+
+    /* ===== PRIVACY SECTION ===== */
+    .privacy-section {
+      padding: 100px 40px;
+      background: rgba(255,255,255,0.01);
+      border-top: 1px solid rgba(255,255,255,0.03);
+      border-bottom: 1px solid rgba(255,255,255,0.03);
+      text-align: center;
+    }
+    .privacy-badges {
+      max-width: 700px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: center;
+      gap: 16px;
+      flex-wrap: wrap;
+      margin-top: 32px;
+    }
+    .privacy-badge {
+      padding: 12px 24px;
+      border-radius: 100px;
+      background: rgba(26,115,232,0.06);
+      border: 1px solid rgba(26,115,232,0.1);
+      font-size: 0.85rem;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.3s;
+    }
+    .privacy-badge:hover {
+      background: rgba(26,115,232,0.12);
+      border-color: rgba(26,115,232,0.2);
+      transform: translateY(-2px);
+    }
+
+    /* ===== FOOTER ===== */
+    footer {
+      padding: 60px 40px 40px;
+      border-top: 1px solid rgba(255,255,255,0.03);
+      text-align: center;
+    }
+    footer .footer-links {
+      display: flex;
+      justify-content: center;
+      gap: 32px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+    footer .footer-links a {
+      font-size: 0.8rem;
+      color: rgba(255,255,255,0.35);
+      transition: color 0.3s;
+    }
+    footer .footer-links a:hover { color: rgba(255,255,255,0.7); }
+    footer p {
+      font-size: 0.75rem;
+      color: rgba(255,255,255,0.2);
+    }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 900px) {
+      .hero-content { grid-template-columns: 1fr; text-align: center; }
+      .hero-sub { margin: 0 auto 32px; }
+      .hero-cta { justify-content: center; }
+      .hero-stats { justify-content: center; }
+      .hero-visual { display: none; }
+      .features-grid { grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 640px) {
+      .navbar { padding: 12px 20px; }
+      .nav-links { display: none; }
+      .hero { padding: 100px 20px 60px; }
+      .features-grid { grid-template-columns: 1fr; }
+      .why-grid { grid-template-columns: 1fr; }
+      .hero-stats { gap: 20px; flex-wrap: wrap; }
+      .features, .gallery, .why-bloggers, .privacy-section { padding: 60px 20px; }
+      footer { padding: 40px 20px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ===== PARALLAX BACKGROUND ===== -->
+  <div class="parallax-bg"></div>
+  <div class="parallax-grid"></div>
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+  <div class="orb orb-3"></div>
+
+  <!-- ===== NAVBAR ===== -->
+  <nav class="navbar" id="navbar">
+    <div class="nav-logo">
+      <svg viewBox="0 0 24 24" fill="none" stroke="url(#lg)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <defs><linearGradient id="lg" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#1A73E8"/><stop offset="100%" stop-color="#00897B"/></linearGradient></defs>
+        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+        <polyline points="14 2 14 8 20 8"/>
+        <line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/>
+        <polyline points="10 9 9 9 8 9"/>
+      </svg>
+      <span>PrivaScan AI</span>
+    </div>
+    <div class="nav-links">
+      <a href="#features">Features</a>
+      <a href="#why-bloggers">For Bloggers</a>
+      <a href="#privacy">Privacy</a>
+    </div>
+  </nav>
+
+  <!-- ===== HERO ===== -->
+  <section class="hero parallax-layer">
+    <div class="hero-content">
+      <div class="hero-text">
+        <div class="hero-badge">Now 100% Free</div>
+        <h1 class="hero-title">
+          Scan. Extract.<br/>
+          <span class="highlight">Summarize.</span><br/>
+          All Offline.
+        </h1>
+        <p class="hero-sub">
+          The first privacy-first document scanner that runs entirely on your device.
+          No data leaves your phone. No accounts. No catch.
+        </p>
+        <div class="hero-cta">
+          <a href="https://play.google.com/store" target="_blank" class="btn btn-primary">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>
+            Download for Android
+          </a>
+          <a href="#features" class="btn btn-secondary">
+            Learn More
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><polyline points="19 12 12 19 5 12"/></svg>
+          </a>
+        </div>
+        <div class="hero-stats">
+          <div class="hero-stat"><h3>100%</h3><p>Offline Processing</p></div>
+          <div class="hero-stat"><h3>0</h3><p>Data Collected</p></div>
+          <div class="hero-stat"><h3>&infin;</h3><p>Free Scans</p></div>
+        </div>
+      </div>
+
+      <div class="hero-visual" id="phoneContainer">
+        <div class="phone-mockup" id="phone">
+          <div class="phone-notch"></div>
+          <div class="phone-screen">
+            <div class="phone-header">
+              <div class="dots">
+                <span></span><span></span><span></span>
+              </div>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.3)" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>
+            </div>
+            <div class="phone-scan-area">
+              <span class="corner corner-tl"></span>
+              <span class="corner corner-tr"></span>
+              <span class="corner corner-bl"></span>
+              <span class="corner corner-br"></span>
+              <div class="scan-line"></div>
+              <svg viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="1"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+            </div>
+            <div class="phone-features">
+              <div class="phone-feat">OCR Text</div>
+              <div class="phone-feat">AI Summary</div>
+              <div class="phone-feat">Multi-Page</div>
+              <div class="phone-feat">No Ads*</div>
+            </div>
+          </div>
+          <!-- floating cards attached to phone container for 3d effect -->
+          <div class="floating-card fc-1">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#4FC3F7" stroke-width="1.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            No Data Leaves
+          </div>
+          <div class="floating-card fc-2">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#81C784" stroke-width="1.5"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+            On-Device AI
+          </div>
+          <div class="floating-card fc-3">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#FFB74D" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            Instant Scan
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== FEATURES ===== -->
+  <section class="features" id="features">
+    <div class="section-header">
+      <h2>Everything a <span class="highlight">Blogger</span> Needs</h2>
+      <p>From research documents to contracts — scan, organize, and understand it all without ever sending data to the cloud.</p>
+    </div>
+    <div class="features-grid">
+      <div class="feature-card" data-tilt>
+        <div class="feature-icon" style="background:rgba(26,115,232,0.1);color:#4A90D9;">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+        </div>
+        <h3>OCR Text Extraction</h3>
+        <p>Extract editable text from any document image using on-device Google ML Kit OCR. No uploads, no delays.</p>
+      </div>
+      <div class="feature-card" data-tilt>
+        <div class="feature-icon" style="background:rgba(0,137,123,0.1);color:#4DB6AC;">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+        </div>
+        <h3>AI Summarization</h3>
+        <p>Generate summaries, action items, and key entities from documents instantly. Ask custom questions too.</p>
+      </div>
+      <div class="feature-card" data-tilt>
+        <div class="feature-icon" style="background:rgba(33,150,243,0.1);color:#64B5F6;">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/></svg>
+        </div>
+        <h3>Multi-Page Scanning</h3>
+        <p>Scan multiple pages in one session with filters, preview, and easy navigation between pages.</p>
+      </div>
+      <div class="feature-card" data-tilt>
+        <div class="feature-icon" style="background:rgba(255,183,77,0.1);color:#FFB74D;">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        </div>
+        <h3>100% Private</h3>
+        <p>Everything runs on your device. No accounts, no sign-ups, no data collection. No internet required for core features.</p>
+      </div>
+      <div class="feature-card" data-tilt>
+        <div class="feature-icon" style="background:rgba(129,199,132,0.1);color:#81C784;">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        </div>
+        <h3>Image Filters</h3>
+        <p>Apply Magic Color, B&W binary threshold, or Grayscale filters to optimize document readability before OCR.</p>
+      </div>
+      <div class="feature-card" data-tilt>
+        <div class="feature-icon" style="background:rgba(186,104,200,0.1);color:#CE93D8;">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+        </div>
+        <h3>Document Management</h3>
+        <p>Search, tag, rename, and organize all your scanned documents with grid or list view. Delete individually or clear all.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== SCREENSHOTS / GALLERY ===== -->
+  <section class="gallery" id="screenshots">
+    <div class="section-header">
+      <h2>See It in <span class="highlight">Action</span></h2>
+      <p>A quick look at the core screens — dashboard, scanner, OCR viewer, and AI summary panel.</p>
+    </div>
+    <div class="gallery-track">
+      <div class="gallery-item">
+        <img src="screenshots/1_dashboard.png" alt="Dashboard" loading="lazy" />
+      </div>
+      <div class="gallery-item">
+        <img src="screenshots/2_scanner.png" alt="Scanner" loading="lazy" />
+      </div>
+      <div class="gallery-item">
+        <img src="screenshots/3_document_view.png" alt="Document View" loading="lazy" />
+      </div>
+      <div class="gallery-item">
+        <img src="screenshots/4_ocr_text.png" alt="OCR Text" loading="lazy" />
+      </div>
+      <div class="gallery-item">
+        <img src="screenshots/5_ai_summary.png" alt="AI Summary" loading="lazy" />
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== WHY BLOGGERS ===== -->
+  <section class="why-bloggers" id="why-bloggers">
+    <div class="section-header">
+      <h2>Built for <span class="highlight">Bloggers</span></h2>
+      <p>Whether you research offline, handle guest post contracts, or scan physical notes — PrivaScan AI keeps your workflow private.</p>
+    </div>
+    <div class="why-grid">
+      <div class="why-card" data-tilt>
+        <div class="num">01</div>
+        <h3>Scan Research Material</h3>
+        <p>Snap photos of books, articles, or printed sources and extract text instantly — no typing, no cloud upload.</p>
+      </div>
+      <div class="why-card" data-tilt>
+        <div class="num">02</div>
+        <h3>Summarize Interview Notes</h3>
+        <p>After an interview, scan your handwritten notes and let AI generate a clean summary with action items in seconds.</p>
+      </div>
+      <div class="why-card" data-tilt>
+        <div class="num">03</div>
+        <h3>Organize Contracts &amp; Briefs</h3>
+        <p>Keep track of guest post guidelines, brand briefs, and contracts. Search by text or tags to find anything fast.</p>
+      </div>
+      <div class="why-card" data-tilt>
+        <div class="num">04</div>
+        <h3>Work Anywhere, Offline</h3>
+        <p>No internet? No problem. Scan, OCR, and summarize on a plane, in a cafe, or anywhere your research takes you.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== PRIVACY ===== -->
+  <section class="privacy-section" id="privacy">
+    <div class="section-header" style="margin-bottom:0;">
+      <h2>Your Data <span class="highlight">Stays Yours</span></h2>
+      <p>No cloud, no accounts, no tracking. Everything runs on-device. Here's what that means in plain English:</p>
+    </div>
+    <div class="privacy-badges">
+      <span class="privacy-badge"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#81C784" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg> Zero data collection</span>
+      <span class="privacy-badge"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#81C784" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg> No sign-up required</span>
+      <span class="privacy-badge"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#81C784" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg> Fully open-source ready</span>
+      <span class="privacy-badge"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#81C784" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg> Uninstall = complete deletion</span>
+      <span class="privacy-badge"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#81C784" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg> No analytics SDKs</span>
+      <span class="privacy-badge"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#81C784" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg> Device-level encryption</span>
+    </div>
+  </section>
+
+  <!-- ===== FOOTER ===== -->
+  <footer>
+    <div class="footer-links">
+      <a href="https://play.google.com/store" target="_blank">Google Play</a>
+      <a href="#">Privacy Policy</a>
+      <a href="#">Terms of Service</a>
+      <a href="mailto:drillmovies@gmail.com">Contact</a>
+    </div>
+    <p>&copy; 2026 PrivaScan AI. All rights reserved. Built with privacy by design.</p>
+  </footer>
+
+  <!-- ===== SCRIPTS ===== -->
+  <script>
+    // --- 3D Tilt on feature/why cards ---
+    document.querySelectorAll('[data-tilt]').forEach(card => {
+      card.addEventListener('mousemove', e => {
+        const rect = card.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        const cx = rect.width / 2;
+        const cy = rect.height / 2;
+        const rotX = (y - cy) / cy * -8;
+        const rotY = (x - cx) / cx * 8;
+        card.style.setProperty('--mx', x + 'px');
+        card.style.setProperty('--my', y + 'px');
+        card.style.transform = `perspective(800px) translateZ(10px) rotateX(${rotX}deg) rotateY(${rotY}deg)`;
+      });
+      card.addEventListener('mouseleave', () => {
+        card.style.transform = 'perspective(800px) translateZ(0) rotateX(0) rotateY(0)';
+      });
+    });
+
+    // --- 3D Phone parallax on mouse move ---
+    const phone = document.getElementById('phone');
+    const phoneContainer = document.getElementById('phoneContainer');
+    if (phone && phoneContainer) {
+      phoneContainer.addEventListener('mousemove', e => {
+        const rect = phoneContainer.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        const cx = rect.width / 2;
+        const cy = rect.height / 2;
+        const rotX = (y - cy) / cy * -12;
+        const rotY = (x - cx) / cx * 12;
+        phone.style.transform = `perspective(1200px) rotateX(${rotX}deg) rotateY(${rotY}deg)`;
+        // floating cards follow with inverse for depth
+        document.querySelectorAll('.floating-card').forEach((fc, i) => {
+          const factor = 1 + (i + 1) * 0.3;
+          const ix = (x - cx) / cx * 6 * factor;
+          const iy = (y - cy) / cy * -6 * factor;
+          fc.style.transform = `translateZ(${40 + i * 20}px) translateX(${ix}px) translateY(${iy}px)`;
+        });
+      });
+      phoneContainer.addEventListener('mouseleave', () => {
+        phone.style.transform = 'perspective(1200px) rotateX(0) rotateY(0)';
+        document.querySelectorAll('.floating-card').forEach(fc => {
+          fc.style.transform = '';
+        });
+      });
+    }
+
+    // --- Parallax scroll effect on grid ---
+    window.addEventListener('scroll', () => {
+      const scrolled = window.pageYOffset;
+      const grid = document.querySelector('.parallax-grid');
+      if (grid) {
+        grid.style.transform = `translateZ(-0.5px) scale(1.5) translateY(${scrolled * 0.15}px)`;
+      }
+      // navbar effect
+      const nav = document.querySelector('.navbar');
+      if (nav) {
+        nav.classList.toggle('scrolled', scrolled > 60);
+      }
+    });
+
+    // --- Smooth reveal on section scroll ---
+    const observerOptions = { threshold: 0.1, rootMargin: '0px 0px -50px 0px' };
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.style.opacity = '1';
+          entry.target.style.transform = 'translateY(0)';
+        }
+      });
+    }, observerOptions);
+    document.querySelectorAll('.feature-card, .why-card, .gallery-item, .privacy-badge').forEach(el => {
+      el.style.opacity = '0';
+      el.style.transform = 'translateY(30px)';
+      el.style.transition = 'opacity 0.6s ease-out, transform 0.6s ease-out';
+      observer.observe(el);
+    });
+  </script>
+</body>
+</html>

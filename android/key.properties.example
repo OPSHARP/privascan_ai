@@ -1,0 +1,8 @@
+# Example key.properties for Android Release Signing
+# Copy this file to `android/key.properties` and fill in your actual credentials.
+# NOTE: `android/key.properties` is git-ignored and should never be committed to source control.
+
+storeFile=C:\\path\\to\\your\\upload-keystore.jks
+storePassword=YourStorePasswordHere
+keyAlias=upload
+keyPassword=YourKeyPasswordHere
