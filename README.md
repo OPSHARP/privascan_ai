@@ -1,8 +1,5 @@
 <div align="center">
 
-  <!-- 3D DYNAMIC WAVING BANNER -->
-  <img src="https://capsule-render.vercel.app/api?type=waving&color=gradient&customColorList=24,20,14,8,2,0&height=220&section=header&text=PrivaScan%20AI&fontSize=42&fontAlignY=38&fontColor=ffffff&desc=%F0%9F%93%84%20Privacy-First%20On-Device%20Document%20Scanner%20%E2%80%A2%20AI%20Summarizer&descAlignY=62&descAlign=50" width="100%" alt="PrivaScan AI 3D Banner" />
-
   <!-- 3D ANIMATED PROJECT ICON -->
   <a href="https://github.com/OPSHARP/privascan_ai">
     <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Objects/Page%20Facing%20Up.png" width="95" height="95" alt="PrivaScan AI 3D Icon" />
@@ -232,8 +229,4 @@ Distributed under the **MIT License**. See [`LICENSE`](LICENSE) for more informa
   <a href="https://play.google.com/store/apps/details?id=com.privascan.ai"><b>Download on Google Play</b></a>
 </div>
 
----
 
-<div align="center">
-  <img src="https://capsule-render.vercel.app/api?type=waving&color=gradient&customColorList=24,20,14,8,2,0&height=100&section=footer" width="100%" alt="3D Waving Footer" />
-</div>
