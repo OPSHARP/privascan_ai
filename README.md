@@ -1,7 +1,7 @@
 <div align="center">
 
   <!-- 3D DYNAMIC WAVING BANNER -->
-  <img src="https://capsule-render.vercel.app/api?type=waving&color=gradient&customColorList=24,20,14,8,2,0&height=220&section=header&text=PrivaScan%20AI&fontSize=42&fontAlignY=38&fontColor=ffffff&desc=%F0%9F%93%84%20Privacy-First%20On-Device%20Document%20Scanner%20%26%20AI%20Summarizer&descAlignY=62&descAlign=50" width="100%" alt="PrivaScan AI 3D Banner" />
+  <img src="https://capsule-render.vercel.app/api?type=waving&color=gradient&customColorList=24,20,14,8,2,0&height=220&section=header&text=PrivaScan%20AI&fontSize=42&fontAlignY=38&fontColor=ffffff&desc=%F0%9F%93%84%20Privacy-First%20On-Device%20Document%20Scanner%20%E2%80%A2%20AI%20Summarizer&descAlignY=62&descAlign=50" width="100%" alt="PrivaScan AI 3D Banner" />
 
   <!-- 3D ANIMATED PROJECT ICON -->
   <a href="https://github.com/OPSHARP/privascan_ai">
