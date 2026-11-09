@@ -1,12 +1,18 @@
 <div align="center">
 
-  <!-- 3D ANIMATED PROJECT ICON -->
-  <a href="https://github.com/OPSHARP/privascan_ai">
-    <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Objects/Page%20Facing%20Up.png" width="95" height="95" alt="PrivaScan AI 3D Icon" />
+  <!-- OFFICIAL APP LOGO -->
+  <a href="https://play.google.com/store/apps/details?id=com.privascan.ai" target="_blank">
+    <img src="android/assets/playstore-icon.png" width="110" height="110" alt="PrivaScan AI Logo" style="border-radius: 24px;" />
   </a>
 
   <h1>PrivaScan AI</h1>
   <p><b>📄 Privacy-First On-Device Document Scanner & AI Summarizer</b></p>
+
+  <p>
+    <a href="https://play.google.com/store/apps/details?id=com.privascan.ai" target="_blank">
+      <img src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png" alt="Get it on Google Play" height="75" />
+    </a>
+  </p>
 
   <!-- 3D TECH STACK CARDS -->
   <p align="center">
